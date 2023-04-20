@@ -1,8 +1,35 @@
 \usepackage{amsthm, amssymb}
-\usepackage{ctex}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \usepackage{xcolor}
+\usepackage{ctex}
 \definecolor{SWJTU}{HTML}{025483}
 \usepackage{enumitem}
 \setlist{noitemsep, topsep=3pt}
+\usepackage{graphicx}
+\setkeys{Gin}{width=.75\textwidth}
+\newcommand\important[1]{\textbf{\textcolor{SWJTU}{#1}}}
+\usepackage[
+    bottom=1.77cm,
+    left=2.75cm,
+    right=2.75cm,
+    marginparwidth=1.5cm,     % + <- Width of your marginpar
+    marginparsep=5mm,       % + <- Gap between text block and marginpar
+]{geometry}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{minted, skins, breakable}
+\tcbset{breakable, colframe=orange!90!black,colback=orange!10, sharp corners=all}
+
+\usepackage{hyperref}
+\usepackage[english]{babel}
+\addto\extrasenglish{
+    \def\chapterautorefname{Chapter}
+}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=SWJTU,
+    filecolor=SWJTU,
+    urlcolor=SWJTU,
+    citecolor=SWJTU,
+}

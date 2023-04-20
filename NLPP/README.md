@@ -7,3 +7,5 @@ Build Intelligent Language Applications UsingDeep Learning
 ## Contributor(s)
 
 ## Contents
+
+1. Introduction
