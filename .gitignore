@@ -14,3 +14,7 @@ NLPP/Ch01.aux
 NLPP/Main.out
 .vscode/settings.json
 NLPP/Ch02.aux
+*.aux
+*.log
+*.out
+*.synctex.gz
