@@ -1,1 +1,53 @@
-\chapter{\label{Ch02}}
+\chapter{A Quick Tour of Traditional NLP\label{Ch02}}
+Natural language processing (NLP) and \textit{computational linguistics} (CL) are two areas of computational study of human language.
+\section{Corpora, Tokens, and Types}
+All NLP methods, be they classic or modern, begin with a text dataset, also called a corpus (plural: corpora). A corpus usually contains raw text (in ASCII or UTF-8) and any metadata associated with the text. The raw text is a sequence of characters(bytes), but most times it is useful to group those characters into contiguous units called tokens. In English, tokens correspond to words and numeric sequences separated by white-space characters or punctuation.
+
+The metadata could be any auxiliary piece of information associated with the text, like identifiers, labels, and timestamps. In machine learning parlance, the text along with its metadata is called an instance or data point. The corpus (\autoref{fig2-1}), a collection of instances, is also known as a dataset.
+
+\figures{fig2-1}{The corpus: the starting point of NLP tasks.}
+
+The process of breaking a text down into tokens is called tokenization.
+
+Types are unique tokens present in a corpus. The set of all types in a corpus is its
+vocabulary or lexicon. Words can be distinguished as content words and stopwords.
+
+\section{Unigrams, Bigrams, Trigrams,$\dots$, N-grams}
+N-grams are fixed-length ($n$) consecutive token sequences occurring in the text.
+
+\section{Lemmas and Stems}
+Lemmas are root forms of words. Sometimes, it might be useful to reduce the
+tokens to their lemmas to keep the dimensionality of the vector representation low. This reduction is called lemmatization. Stemming is the poor-man's lemmatization.3 It involves the use of handcrafted rules
+to strip endings of words to reduce them to a common form called stems.
+\section{Categorizing Sentences and Documents}
+\subsection{Categorizing Words: POS Tagging}
+We can extend the concept of labeling from documents to individual words or
+tokens. A common example of categorizing words is part-of-speech (POS) tagging.
+
+\subsection{Categorizing Spans: Chunking and Named Entity Recognition}
+Often, we need to label a span of text; that is, a contiguous multitoken boundary. For
+example, consider the sentence, “Mary slapped the green witch.” We might want to
+identify the noun phrases (NP) and verb phrases (VP) in it, as shown here:
+
+\verb|[NP Mary] [VP slapped] [the green witch].|
+
+This is called chunking or shallow parsing. Shallow parsing aims to derive higherorder units composed of the grammatical atoms, like nouns, verbs, adjectives, and so
+on.
+
+Another type of span that's useful is the \textbf{named entity}. A named entity is a string
+mention of a real-world concept like a person, location, organization, drug name, and
+so on.
+
+\subsection*{Structure of Sentences}
+Whereas shallow parsing identifies phrasal units, the task of identifying the relationship between them is called \textbf{parsing}.
+
+\figures{fig2-3}{A constituent parse of the sentence “Mary slapped the green witch.”}
+
+Parse trees indicate how different grammatical units in a sentence are related hierarchically. The parse tree in \autoref{fig2-3} shows what's called a constituent parse.
+Another, possibly more useful, way to show relationships is using dependency parsing, depicted in \autoref{fig2-4}.
+
+\figures{fig2-4}{A dependency parse of the sentence “Mary slapped the green witch.”}
+
+\section{Word Senses and Semantics}
+Words have meanings, and often more than one. The different meanings of a word
+are called its senses.
