@@ -18,6 +18,15 @@
     marginparsep=5mm,       % + <- Gap between text block and marginpar
 ]{geometry}
 
+\newcommand\figures[2]{
+    \begin{figure}
+        \centering
+        \includegraphics{img/#1}
+        \caption{#2}
+        \label{#1}
+    \end{figure}
+}
+
 \usepackage{titlesec}
 \titlespacing\section{0pt}{8pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 \titlespacing\subsection{0pt}{8pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
