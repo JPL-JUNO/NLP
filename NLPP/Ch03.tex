@@ -1,1 +1,15 @@
 \chapter{Foundational Components of Neural Networks\label{Ch03}}
+\section{The Perceptron: The Simplest Neural Network}
+Each perceptron unit has an input ($x$), an output ($y$), and three “knobs”: a set of
+weights ($w$), a bias ($b$), and an activation function ($f$). The weights and the bias are
+learned from the data, and the activation function is handpicked depending on the
+network designer’s intuition of the network and its target outputs. Mathematically,
+we can express this as follows:
+$$y = f(\textbf{w}x + \textbf{b})$$
+
+\figures{fig3-1}{The computational graph for a perceptron with an input ($x$) and an output($y$). The weights ($w$) and bias ($b$) constitute the parameters of the model.}
+
+t is usually the case that there is more than one input to the perceptron. We can represent this general case using vectors. That is, $\textbf{x}$, and $\textbf{w}$ are vectors, and the product of $\textbf{w}$ and $\textbf{x}$ is replaced with a dot product:
+$$y = f(\textbf{w}\textbf{x} + \textbf{b})$$
+
+essentially, a perceptron is a composition of a linear and a nonlinear function. The linear expression wx+b is also known as an \textif{affine transform}.
