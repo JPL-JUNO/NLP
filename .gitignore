@@ -21,3 +21,6 @@ NLPP/Ch02.aux
 *.synctex.gz
 NLPP/Codes/__pycache__/Ch02.cpython-310.pyc
 *.pyc
+_minted-Main
+NLPP/Codes/data/yelp/raw_test.csv
+NLPP/Codes/data/yelp/raw_train.csv

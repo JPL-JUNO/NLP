@@ -73,3 +73,22 @@ function named step().
 \begin{tcolorbox}
     In the literature, and also in this notes, the term minibatch is used interchangeably with batch to highlight that each of the batches is significantly smaller than the size of the training data; for example, the training data size could be in the millions, whereas the minibatch could be just a few hundred in size.
 \end{tcolorbox}
+
+\section{Auxiliary Training Concepts}
+\subsection{Knowing When to Stop Training}
+The most common method is to use a heuristic(启发式算法) called \textit{early stopping}.
+Early stopping works by keeping track of the performance on the validation dataset
+from epoch to epoch and noticing when the performance no longer improves. Then,
+if the performance continues to not improve, the training is terminated. The number
+of epochs to wait before terminating the training is referred to as the \textit{patience}.
+In general, the point at which a model stops improving on some dataset is said to be when
+the model has \textit{converged}. In practice, we rarely wait for a model to completely converge because convergence is time-consuming, and it can lead to overfitting.
+
+
+\subsection{Regularization}
+This smoothness constraint in machine learning is called L2 \textit{regularization}. In
+PyTorch, you can control this by setting the weight\_decay parameter in the optimizer. The larger the weight\_decay value, the more likely it is that the optimizer will
+select the smoother explanation (that is, the stronger is the L2 regularization).
+
+\section{Example: Classifying Sentiment of Restaurant Reviews}
+After understanding the dataset, you will see a pattern defining three assisting classesthat is repeated throughout this book and is used to transform text data into a vectorized form: the \textsf{Vocabulary}, the \textsf{Vectorizer}, and PyTorch's \textsf{DataLoader}. The Vocabulary coordinates the integer-to-token mappings. We use a Vocabulary both for mapping the texttokens to integers and for mapping the class labels to integers. Next, the Vectorizerencapsulates the vocabularies and is responsible for ingesting string data, like areview's text, and converting it to numerical vectors that will be used in the trainingroutine. We use the final assisting class, PyTorch's DataLoader, to group and collatethe individual vectorized data points into minibatches.
