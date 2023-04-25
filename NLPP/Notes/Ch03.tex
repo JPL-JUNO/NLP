@@ -92,3 +92,18 @@ select the smoother explanation (that is, the stronger is the L2 regularization)
 
 \section{Example: Classifying Sentiment of Restaurant Reviews}
 After understanding the dataset, you will see a pattern defining three assisting classesthat is repeated throughout this book and is used to transform text data into a vectorized form: the \textsf{Vocabulary}, the \textsf{Vectorizer}, and PyTorch's \textsf{DataLoader}. The Vocabulary coordinates the integer-to-token mappings. We use a Vocabulary both for mapping the texttokens to integers and for mapping the class labels to integers. Next, the Vectorizerencapsulates the vocabularies and is responsible for ingesting string data, like areview's text, and converting it to numerical vectors that will be used in the trainingroutine. We use the final assisting class, PyTorch's DataLoader, to group and collatethe individual vectorized data points into minibatches.
+
+\subsection{The Vocabulary, the Vectorizer, and the DataLoader}
+The \textsf{Vocabulary}, the \textbf{Vectorizer}, and the \textbf{DataLoader}  are three classes that we use in nearly every example in this book to perform a crucial pipeline: converting text inputs to vectorized minibatches. The pipeline starts with preprocessed text; each data point is a collection of tokens. The three classes presented in the following subsections are responsible for mapping each token to an integer, applying this mapping to each data point to create a vectorized form, and then grouping the vectorized data points into a minibatch for the model.
+\subsubsection*{Vocabulary}
+The standard methodology is to have a bijection—a mapping that can be reversed—between the tokens and integers.
+
+\subsection{A Perceptron Classifier}
+We parameterize the forward() method to allow for the sigmoid function to be
+optionally applied. To understand why, it is important to first point out that in a
+binary classification task, binary cross-entropy loss (\textsf{torch.nn.BCELoss()}) is the
+most appropriate loss function. It is mathematically formulated for binary probabilities. However, there are numerical stability issues with applying a sigmoid and then
+using this loss function. To provide its users with shortcuts that are more numerically
+stable, PyTorch provides \textsf{BCEWithLogitsLoss()}. To use this loss function, the output
+should not have the sigmoid function applied. Therefore, by default, we do not apply
+the sigmoid. However, in the case that the user of the classifier would like a probability value, the sigmoid is required, and it is left as an option.
