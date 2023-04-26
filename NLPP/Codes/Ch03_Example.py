@@ -8,6 +8,9 @@
 from torch.utils.data import Dataset, DataLoader
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
+from torch import Tensor
+import torch
 import pandas as pd
 import numpy as np
 import string
@@ -15,6 +18,8 @@ import json
 from collections import Counter
 from numpy import ndarray
 from pandas import DataFrame
+from argparse import Namespace
+from tqdm.notebook import tqdm
 
 
 class ReviewDataSet(Dataset):
@@ -48,7 +53,7 @@ class ReviewDataSet(Dataset):
             an instance of ReviewDataset
         """
         review_df = pd.read_csv(review_csv)
-        return cls(review_df, ReviewDataSet.from_dataframe(review_df))
+        return cls(review_df, ReviewVectorizer.from_dataframe(review_df))
 
     @classmethod
     def load_dataset_and_load_vectorizer(cls, review_csv: str, vectorizer_filepath: str):
@@ -80,7 +85,7 @@ class ReviewDataSet(Dataset):
             split (str, optional): one of 'train', 'val', or 'test'. Defaults to 'train'.
         """
         self._target_split = split
-        self._target_df, self._target_size = self._lookup_dict(split)
+        self._target_df, self._target_size = self._lookup_dict[split]
 
     def __len__(self):
         return self._target_size
@@ -276,14 +281,163 @@ def generate_batches(dataset, batch_size, shuffle=True, drop_last=True, device='
 
 
 class ReviewClassifier(nn.Module):
-    def __init__(self, num_features):
+    """a simple perceptron-based classifier
+    """
+
+    def __init__(self, num_features: int):
+        """_summary_
+
+        Args:
+            num_features (int): the size of the input feature vector
+        """
         super(ReviewClassifier, self).__init__()
         # fully connection layer, fc
         self.fc1 = nn.Linear(in_features=num_features,
                              out_features=1)
 
-    def forward(self, x_in, apply_sigmoid: bool = False):
+    def forward(self, x_in: Tensor, apply_sigmoid: bool = False) -> torch.Tensor:
+        """The forward pass of the classifier
+
+        Args:
+            x_in (torch.Tensor): an input data tensor
+                x_in.shape should be (batch, num_features)
+            apply_sigmoid (bool, optional): a flag for the sigmoid activation
+                should be false if used with the cross-entropy losses
+                Defaults to False.
+
+        Returns:
+            _type_: the resulting tensor. tensor.shape should be (batch, )
+        """
         y_out = self.fc1(x_in).squeeze()
         if apply_sigmoid:
             y_out = F.sigmoid(y_out)
         return y_out
+
+
+args = Namespace(
+    # Data and path information
+    frequency_cutoff=25,
+    model_state_file='model.pth',
+    review_csv='data/yelp/reviews_with_split_lite.csv',
+    save_dir='model_storage/ch3/yelp/',
+    # No model hyperparameters
+    # Training parameters
+    batch_size=128,
+    early_stopping_criteria=5,
+    learning_rate=0.001,
+    num_epochs=1,
+    seed=1337,
+    # Runtime options omitted for space
+)
+
+
+def make_train_state(args) -> dict:
+    return {'epoch_index': 0,
+            'train_loss': [],
+            'train_acc': [],
+            'val_loss': [],
+            'val_acc': [],
+            'test_loss': -1,
+            'test_acc': -1}
+
+
+def compute_accuracy(y_pred: Tensor, y_target: Tensor) -> float:
+    y_target = y_target.cpu()
+    y_pred_indices = (torch.sigmoid(y_pred) > .5).cpu().long()
+    # item()是转成标量？
+    n_correct = torch.eq(y_pred_indices, y_target).sum().item()
+    return n_correct / len(y_pred_indices) * 100
+
+
+train_state = make_train_state(args)
+if not torch.cuda.is_available():
+    args.cuda = False
+args.device = torch.device("cuda" if args.cuda else 'cpu')
+
+# 数据集和分词器
+dataset = ReviewDataSet.load_dataset_and_make_vectorizer(args.review_csv)
+vectorizer = dataset.get_vectorizer()
+
+# 模型
+classifier = ReviewClassifier(num_features=len(vectorizer.review_vocab))
+classifier = classifier.to(args.device)
+
+# loss and optimizer
+loss_func = nn.BCEWithLogitsLoss()
+optimizer = optim.Adam(classifier.parameters(), lr=args.learning_rate)
+
+epoch_bar = tqdm(desc='training routine',
+                 total=args.num_epochs,
+                 position=0)
+
+dataset.set_split('train')
+train_bar = tqdm(desc='split=train',
+                 total=dataset.get_num_batches(args.batch_size),
+                 position=1,
+                 leave=True)
+
+for epoch_idx in range(args.num_epochs):
+    train_state['epoch_index'] = epoch_idx
+
+    # iterate over training dataset
+    # setup: batch generator, set loss and acc to 0,
+    # set train mode on
+    dataset.set_split('train')
+    batch_generator = generate_batches(dataset,
+                                       batch_size=args.batch_size,
+                                       device=args.device)
+    running_loss = .0
+    running_acc = .0
+    classifier.train()
+
+    for batch_idx, batch_dict in enumerate(batch_generator):
+        # the training routine is 5 steps
+
+        # step 1: zero the gradients
+        optimizer.zero_grad()
+        # step 2: compute the output
+        y_pred = classifier(x_in=batch_dict['x_data'].float())
+        # step 3: compute the loss
+        loss = loss_func(y_pred, batch_dict['y_target'].float())
+        loss_batch = loss.item()
+        running_loss += (loss_batch - running_loss) / (batch_idx + 1)
+        # step 4: use loss to produce gradients
+        loss.backward()
+        # step 5: use optimizer to take gradient step
+        optimizer.step()
+        acc_batch = compute_accuracy(y_pred, batch_dict['y_target'])
+        running_acc += (acc_batch - running_acc)
+
+        train_bar.set_postfix(loss=running_loss,
+                              acc=running_acc,
+                              epoch=epoch_idx)
+        train_bar.update()
+
+    train_state['train_loss'].append(running_loss)
+    train_state['train_acc'].append(running_acc)
+
+    dataset.set_split('val')
+    batch_generator = generate_batches(dataset,
+                                       batch_size=args.batch_size,
+                                       device=args.device)
+# running_loss = 0.
+# running_acc = 0.
+# classifier.eval()
+
+# for batch_idx, batch_dict in enumerate(batch_generator):
+#     # step 1: compute the output
+#     y_pred = classifier(x_in=batch_dict['x_data'].float())
+
+#     # step 2: compute the loss
+#     loss = loss_func(y_pred, batch_dict['y_target'].float())
+#     loss_batch = loss.item()
+#     running_loss += (loss_batch - running_loss) / (batch_idx + 1)
+
+#     # step 3 compute the accuracy
+#     acc_batch = compute_accuracy(y_pred, batch_dict['y_target'].float())
+#     running_acc += (acc_batch - running_acc) / (batch_idx + 1)
+
+# train_state['val_loss'].append(running_loss)
+# train_state['val_acc'].append(running_acc)
+    train_bar.n = 0
+    epoch_bar.update()

@@ -107,3 +107,6 @@ using this loss function. To provide its users with shortcuts that are more nume
 stable, PyTorch provides \textsf{BCEWithLogitsLoss()}. To use this loss function, the output
 should not have the sigmoid function applied. Therefore, by default, we do not apply
 the sigmoid. However, in the case that the user of the classifier would like a probability value, the sigmoid is required, and it is left as an option.
+\subsection{The Training Routine}
+\subsubsection*{The training loop}
+The training loop uses the objects from the initial instantiation to update the model parameters so that it improves over time. More specifically, the training loop is composed of two loops: an inner loop over minibatches in the dataset, and an outer loop, which repeats the inner loop a number of times. In the inner loop, losses are computed for each minibatch, and the optimizer is used to update the model parameters.
