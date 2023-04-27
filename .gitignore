@@ -24,3 +24,4 @@ NLPP/Codes/__pycache__/Ch02.cpython-310.pyc
 _minted-Main
 NLPP/Codes/data/yelp/raw_test.csv
 NLPP/Codes/data/yelp/raw_train.csv
+*.pth
