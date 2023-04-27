@@ -8,6 +8,6 @@
 
 <a href="https://learning.oreilly.com/library/view/natural-language-processing/9781491978221/"><img src="https://learning.oreilly.com/covers/urn:orm:book:9781491978221/400w/" width=150></a>
 
-<a href="https://learning.oreilly.com/covers/urn:orm:book:9781617294631/400w/"><img src="https://learning.oreilly.com/library/view/natural-language-processing/9781617294631/" width=150></a>
+<a href="https://learning.oreilly.com/library/view/natural-language-processing/9781617294631/"><img src="https://learning.oreilly.com/covers/urn:orm:book:9781617294631/400w/" width=150></a>
 
-<a href="http://oreilly.com.cn/images/bookcover/deep_learning_scratch-2e_cvr_l.jpg"><img src="http://oreilly.com.cn/index.php?func=book&isbn=978-7-115-54764-4" width=150></a>
+<a href="https://www.ituring.com.cn/book/2678"><img src="https://file.ituring.com.cn/LargeCover/2009b4aa1a8c943c1aef" width=150></a>
