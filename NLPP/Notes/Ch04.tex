@@ -1,0 +1,26 @@
+\chapter{Feed-Forward Networks for Natural Language Processing\label{Ch04}}
+One of the historic downfalls of the perceptron was that it cannot learn modestly nontrivial patterns present in data.
+
+In this chapter, we explore a family of neural network models traditionally called feed-forward networks. We focus on two kinds of feed-forward neural networks: the multilayer perceptron (MLP) and the convolutional neural network (CNN).
+
+The multilayer perceptron structurally extends the simpler perceptron by grouping many perceptrons in a single layer and stacking multiple layers together. The second kind of feed-forward neural networks studied in this chapter, the convolutional neural network, is deeply inspired by windowed filters in the processing of digital signals.
+
+As we walk through different models, one useful way to make sure you understand how things work is to pay attention to the size and shape of the data tensors as they are being computed. Each type of neural network layer has a specific effect on the size and shape of the data tensor it is computing on, and understanding that effect can be extremely conducive to a deeper understanding of these models.
+
+\section{The Multilayer Perceptron}
+The perceptron takes the data vector2 as input and computes a single output value. In an MLP, many perceptrons are grouped so that the output of a single layer is a new vector instead of a single output value. An additional aspect of an MLP is that it combines multiple layers with a nonlinearity in between each layer.
+
+The power of MLPs comes from adding the second Linear layer and allowing the model to learn an intermediate representation that is linearly separable. \textit{Learning intermediate representations that have specific properties, like being linearly separable for a classification task, is one of the most profound consequences of using neural networks and is quintessential to their modeling capabilities.}
+\subsection{A Simple Example: XOR}
+\subsection{Implementing MLPs in PyTorch}
+We can quickly test the `` wiring'' of the model by passing some random inputs. Because the model is not yet trained, the outputs are random. Doing this is a useful sanity check before spending time training a model.
+
+However, if you want to turn the prediction vector into probabilities, an extra step is
+required. Specifically, you require the softmax activation function, which is used to
+transform a vector of values into probabilities. The softmax function has many roots.
+In physics, it is known as the Boltzmann or Gibbs distribution; in statistics, it’s multinomial logistic regression; and in the natural language processing (NLP) community it’s known as the maximum entropy (MaxEnt) classifier. But you should
+not use softmax with specific loss functions, because the underlying implementations can leverage superior mathematical/com putational shortcuts.
+\section{Example: Surname Classification with an MLP}
+\subsection*{The SurnameClassifier Model}
+The softmax function is optionally applied to make sure the outputs
+sum to 1; that is, are interpreted as ``probabilities''. The reason it is optional has to do with the mathematical formulation of the loss function we use—the cross-entropy loss, introduced in ``Loss Functions''. Recall that cross-entropy loss is most desirable for multiclass classification, but computation of the softmax during training is not only wasteful but also not numerically stable in many situations.

@@ -539,6 +539,7 @@ for batch_idx, batch_dict in enumerate(batch_generator):
 
     loss = loss_func(y_pred, batch_dict['y_target'].float())
     loss_t = loss.item()
+    # average mean
     running_loss += (loss_t - running_loss) / (batch_idx + 1)
     acc_t = compute_accuracy(y_pred, batch_dict['y_target'])
     running_acc += (acc_t - running_acc) / (batch_idx + 1)
